@@ -1,0 +1,1 @@
+AWIN.runPlugins(["convertALink","monotote","dailygo"]);

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+    <script type="text/javascript">
+      (function(win, doc, cookieName) {
+        function getVendorConsentCookie() {
+          var cookie = doc.cookie.split(cookieName + '=');
+          if (doc.cookie.split(cookieName + '=').length === 2) {
+            return cookie[1].split(';')[0];
+          }
+        }
+
+        function writeVendorConsentCookie(value) {
+          var cookie = cookieName + '=' + value + ';domain=.consensu.org;path=/;max-age=33696000';
+          doc.cookie = cookie;
+        }
+
+        var commands = {
+          readVendorConsent: function() {
+            return getVendorConsentCookie(cookieName);
+          },
+          writeVendorConsent: function(vendorConsent) {
+            return writeVendorConsentCookie(vendorConsent.encodedValue);
+          }
+        };
+
+        function handleMessage(e) {
+          var vendorConsent = e.data && e.data.vendorConsent;
+          if (vendorConsent && commands[vendorConsent.command]) {
+            vendorConsent.result = commands[vendorConsent.command](vendorConsent);
+            e.source.postMessage({ vendorConsent: vendorConsent }, e.origin);
+          }
+        }
+
+        win.addEventListener("message", handleMessage);
+        win.parent.postMessage({ vendorConsent: { command: "isLoaded"  }  }, "*");
+      })(window, document, 'euconsent');
+    </script>
+  </head>
+  <body>
+  
+
+</body></html>
